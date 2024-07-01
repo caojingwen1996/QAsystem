@@ -4,6 +4,7 @@
 #input：text
 #output:vector
 【中文文本向量化模型】text2vec-base-chinese
+部署参考：https://blog.csdn.net/hugo_lei/article/details/134630373bi
 
 2. vectorStore
 【向量数据库】Milvus/FAISS
