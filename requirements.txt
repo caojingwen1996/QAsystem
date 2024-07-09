@@ -5,3 +5,4 @@ langchain_text_splitters==0.2.2
 text2vec==1.2.9
 transformers==4.42.2
 torch==2.1.2
+unstructured==0.7.12
