@@ -48,9 +48,8 @@ print("开始embed")
 model_kwargs = {"device": "cpu", "trust_remote_code": True}
 
 embeddings=HuggingFaceEmbeddings(
-    model_name=model_path,
-    model_kwargs=model_kwargs)
-# documents = ["foo bar"]
+    model_name=model_path)
+docs = ["foo bar"]
 output = embeddings.embed_documents(docs)
 print(len(output))
 print(output[0]) 
