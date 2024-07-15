@@ -9,7 +9,7 @@ import json
 
 # os.environ["QIANFAN_AK"] = "v2SKnMKK94eO3IiFjEuC6jio"
 # os.environ["QIANFAN_SK"] = "BAlrTZAWFqHZFeTGrqHANLziKvUFIka0"
-model_path='local:/opt/codes/Model/text2vec-base-chinese'
+model_path='/opt/codes/Model/text2vec-base-chinese'
 filename="算力行业周刊.pdf"
 # model = AutoModel.from_pretrained(model_path, trust_remote_code=True) 
 
