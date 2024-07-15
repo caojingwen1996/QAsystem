@@ -9,7 +9,8 @@ import json
 
 # os.environ["QIANFAN_AK"] = "v2SKnMKK94eO3IiFjEuC6jio"
 # os.environ["QIANFAN_SK"] = "BAlrTZAWFqHZFeTGrqHANLziKvUFIka0"
-model_path='/opt/codes/Model/text2vec-base-chinese'
+# model_path='/opt/codes/Model/text2vec-base-chinese'
+model_path='../Model/text2vec-base-chinese'
 filename="算力行业周刊.pdf"
 # model = AutoModel.from_pretrained(model_path, trust_remote_code=True) 
 
@@ -39,26 +40,30 @@ text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=200, chunk_overlap=10
 )
 
-docs = text_splitter.split_documents(documents)
+splitted_documents = text_splitter.split_documents(documents)
 # docs = text_splitter.split_text(text)
-print(len(docs)) # 11
-# print(docs[0]) 
+print(len(splitted_documents)) # 11
+print(splitted_documents[0]) 
 
 print("开始embed")
-model_kwargs = {"device": "cpu", "trust_remote_code": True}
+model_kwargs = {"device": "cpu", "trust_remote_code": True,"local_files_only":True}
 
 embeddings=HuggingFaceEmbeddings(
-    model_name=model_path)
-docs = ["foo bar"]
-output = embeddings.embed_documents(docs)
-print(len(output))
-print(output[0]) 
+    model_name=model_path,model_kwargs=model_kwargs)
 
+# # 获取要嵌入的文档内容
+# texts = [doc.page_content for doc in splitted_documents]
+# output = embeddings.embed_documents(texts)
 
+# # print(len(output))
+# # print(output[0]) 
 
-# db = FAISS.from_documents(docs, embeddings)
+print("开始FAISS")
 
-# db.save_local(os.path.join("Data","faiss_index_text2vec/doc"))
+db = FAISS.from_documents(splitted_documents, embeddings)
+save_path=os.path.join("Data","faiss_index_text2vec/doc")
+db.save_local(save_path)
+print("向量索引已保存在：", save_path)
 
 
 # if __name__ == '__main__':
