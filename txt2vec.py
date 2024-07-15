@@ -9,7 +9,7 @@ import json
 
 # os.environ["QIANFAN_AK"] = "v2SKnMKK94eO3IiFjEuC6jio"
 # os.environ["QIANFAN_SK"] = "BAlrTZAWFqHZFeTGrqHANLziKvUFIka0"
-# model_path='/opt/codes/Model/text2vec-base-chinese'
+model_path='/opt/codes/Model/text2vec-base-chinese'
 filename="算力行业周刊.pdf"
 # model = AutoModel.from_pretrained(model_path, trust_remote_code=True) 
 
@@ -42,15 +42,19 @@ text_splitter = RecursiveCharacterTextSplitter(
 docs = text_splitter.split_documents(documents)
 # docs = text_splitter.split_text(text)
 print(len(docs)) # 11
-print(docs[0]) 
+# print(docs[0]) 
 
-# print("开始embed")
-# model_kwargs = {"device": "cpu", "trust_remote_code": True}
+print("开始embed")
+model_kwargs = {"device": "cpu", "trust_remote_code": True}
 
-# embeddings=HuggingFaceEmbeddings(model_name=model_path)
+embeddings=HuggingFaceEmbeddings(
+    model_name=model_path,
+    model_kwargs=model_kwargs)
 # documents = ["foo bar"]
-# output = embeddings.embed_documents(documents)
-# print(output)
+output = embeddings.embed_documents(docs)
+print(len(output))
+print(output[0]) 
+
 
 
 # db = FAISS.from_documents(docs, embeddings)
