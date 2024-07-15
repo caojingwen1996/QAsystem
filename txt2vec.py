@@ -37,7 +37,7 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 
 # docs = text_splitter.split_documents(documents)
-docs = text_splitter.split_documents(text)
+docs = text_splitter.split_text(text)
 print(len(docs)) # 11
 print(docs[0]) 
 
