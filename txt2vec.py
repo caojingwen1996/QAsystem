@@ -15,27 +15,39 @@ model = AutoModel.from_pretrained(model_path, trust_remote_code=True)
 
 
 
-loader=UnstructuredFileLoader(os.path.join("Data",filename))
+# loader=UnstructuredFileLoader(os.path.join("Data",filename))
 
-print("开始load")
+# print("开始load")
 
-documents=loader.load()
+# documents=loader.load()
+
 
 print("开始split")
+text = """What I Worked On
+
+February 2021
+
+Before college the two main things I worked on, outside of school, were writing and programming. I didn't write essays. I wrote what beginning writers were supposed to write then, and probably still are: short stories. My stories were awful. They had hardly any plot, just characters with strong feelings, which I imagined made them deep.
+
+The first programs I tried writing were on the IBM 1401 that our school district used for what was then called "data processing." This was in 9th grade, so I was 13 or 14. The school district's 1401 happened to be in the basement of our junior high school, and my friend Rich Draves and I got permission to use it. It was like a mini Bond villain's lair down there, with all these alien-looking machines — CPU, disk drives, printer, card reader — sitting up on a raised floor under bright fluorescent lights.
+"""
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=200, chunk_overlap=10
 )
 
-docs = text_splitter.split_documents(documents)
+# docs = text_splitter.split_documents(documents)
+docs = text_splitter.split_documents(text)
+print(len(docs)) # 11
+print(docs[0]) 
 
-print("开始embed")
-model_kwargs = {"device": "cpu", "trust_remote_code": True}
+# print("开始embed")
+# model_kwargs = {"device": "cpu", "trust_remote_code": True}
 
-embeddings=HuggingFaceEmbeddings(model_name=model_path)
-documents = ["foo bar"]
-output = embeddings.embed_documents(documents)
-print(output)
+# embeddings=HuggingFaceEmbeddings(model_name=model_path)
+# documents = ["foo bar"]
+# output = embeddings.embed_documents(documents)
+# print(output)
 
 
 # db = FAISS.from_documents(docs, embeddings)
