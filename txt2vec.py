@@ -17,16 +17,15 @@ filename="算力行业周刊.pdf"
 
 # test="/opt/codes/QAsystem/Data/算力行业周刊.pdf"
 loader=UnstructuredFileLoader(os.path.join("Data",filename))
-# loader=UnstructuredFileLoader(test)
 
 print("开始load")
 
 documents=loader.load()
 
 print(len(documents))
-print(documents[0]) 
+# print(documents[0]) 
 
-# print("开始split")
+print("开始split")
 # text = """What I Worked On
 
 # February 2021
@@ -36,14 +35,14 @@ print(documents[0])
 # The first programs I tried writing were on the IBM 1401 that our school district used for what was then called "data processing." This was in 9th grade, so I was 13 or 14. The school district's 1401 happened to be in the basement of our junior high school, and my friend Rich Draves and I got permission to use it. It was like a mini Bond villain's lair down there, with all these alien-looking machines — CPU, disk drives, printer, card reader — sitting up on a raised floor under bright fluorescent lights.
 # """
 
-# text_splitter = RecursiveCharacterTextSplitter(
-#     chunk_size=200, chunk_overlap=10
-# )
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=200, chunk_overlap=10
+)
 
-# # docs = text_splitter.split_documents(documents)
+docs = text_splitter.split_documents(documents)
 # docs = text_splitter.split_text(text)
-# print(len(docs)) # 11
-# print(docs[0]) 
+print(len(docs)) # 11
+print(docs[0]) 
 
 # print("开始embed")
 # model_kwargs = {"device": "cpu", "trust_remote_code": True}
