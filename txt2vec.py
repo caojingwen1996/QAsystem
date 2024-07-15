@@ -15,9 +15,9 @@ filename="算力行业周刊.pdf"
 
 
 
-test="/opt/codes/QAsystem/Data/算力行业周刊.pdf"
-# loader=UnstructuredFileLoader(os.path.join("Data",filename))
-loader=UnstructuredFileLoader(test)
+# test="/opt/codes/QAsystem/Data/算力行业周刊.pdf"
+loader=UnstructuredFileLoader(os.path.join("Data",filename))
+# loader=UnstructuredFileLoader(test)
 
 print("开始load")
 
