@@ -56,10 +56,10 @@ def chat_loop(user_input):
     return rag_chain.invoke(user_input)
 
 
-user_input = "你了解哪些行业？"
+user_input = "你能为我解答哪些困惑？"
 while True:
     response = chat_loop(user_input)
-    print("AI助手：", response)
+    print("屠龙的胭脂井：", response)
     user_input = input("你：")
 
 def greet(name, intensity):

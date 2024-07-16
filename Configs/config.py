@@ -9,7 +9,7 @@ EMBEDDING_MODEL_PATH='../Model/text2vec-base-chinese'
 VECTOR_DB_PATH='Data/VectorDB/faiss_index_text2vec'
 
 # 待处理的文档
-SRC_FODER_PATH='Data/src'
+SRC_FODER_PATH='Data/src/tulong'
 
 
 #tongyi
