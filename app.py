@@ -9,6 +9,8 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
 from langchain_community.llms.tongyi import Tongyi
 from Configs import config
+from langchain_community.graphs import Neo4jGraph
+from langchain.chains.graph_qa.cypher import GraphCypherQAChain
 
 
 
@@ -41,7 +43,7 @@ print("开始query")
 db = load_knowledges()
 retriever = db.as_retriever()
 
-llm = Tongyi(model_name="qwen1.5-72b-chat")
+llm = Tongyi(model_name="qwen1.5-1.8b-chat")
 
 def format_docs(docs):
     return "\n\n".join(doc.page_content for doc in docs)
@@ -55,6 +57,11 @@ def chat_loop(user_input):
     )
     return rag_chain.invoke(user_input)
 
+def graph_query(user_input):
+    graph = Neo4jGraph()
+    graph.refresh_schema()
+    chain = GraphCypherQAChain.from_llm(graph=graph, llm=llm, verbose=True)
+    return chain.invoke({"query": "{user_input}"})
 
 user_input = "你能为我解答哪些困惑？"
 while True:
@@ -62,14 +69,3 @@ while True:
     print("屠龙的胭脂井：", response)
     user_input = input("你：")
 
-def greet(name, intensity):
-    return "Hello, " + name + "!" * int(intensity)
-
-demo = gr.Interface(
-    fn=greet,
-    inputs=["text", "slider"],
-    outputs=["text"],
-)
-
-
-demo.launch()
