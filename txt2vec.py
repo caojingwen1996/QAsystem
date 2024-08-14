@@ -89,8 +89,7 @@ def graph_doc():
     # 太多了 需要分批保存
     # graph.add_graph_documents(graph_documents) 
     print("save to neo4j graph db") 
-
-
+ 
 
 
 if __name__ == '__main__':
