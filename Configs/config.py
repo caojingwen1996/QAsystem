@@ -17,6 +17,12 @@ os.environ["DASHSCOPE_API_KEY"] = "sk-190e2fb00a9b4233b1644ebdd080a390" #my
 LLM_MODEL_NAME = "qwen2-1.5b-instruct" #my
 
 #username: neo4j
+# os.environ["NEO4J_USERNAME"]='neo4j'
+# os.environ["NEO4J_PASSWORD"]='SOupwIu7HWAokTWi-fBJhPV77cs6YBpbrRG-QrjxYRM'
+# os.environ["NEO4J_URI"]='neo4j+s://a6a79697.databases.neo4j.io'
+
+# local
+os.environ["NEO4J_URI"]='bolt://localhost:7687'
 os.environ["NEO4J_USERNAME"]='neo4j'
-os.environ["NEO4J_PASSWORD"]='SOupwIu7HWAokTWi-fBJhPV77cs6YBpbrRG-QrjxYRM'
-os.environ["NEO4J_URI"]='neo4j+s://a6a79697.databases.neo4j.io'
+os.environ["NEO4J_PASSWORD"]='12345678'
+

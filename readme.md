@@ -36,8 +36,11 @@ RAG:检索-生成-增强
 ## 进度
 - [x] 非结构化文本创建知识图谱
   - [x] linux部署neo4j
-  - [ ] 如何生成知识图谱？
-  - [ ] 如何查询知识图谱？
+  - [x] windows部署neo4j
+  - [x] llm连接neo4j
+  - [x] 生成知识图谱？  graph_db.add_graph_documents([doc]) 
+  - [x] 如何查询知识图谱？GraphCypherQAChain
+  - [ ] 如何融合查询？
   - [ ] 建设工程规范-知识图谱
   - [ ] 敏感词过滤
 - [ ] Cypher 知识图谱检索信息
@@ -45,6 +48,20 @@ RAG:检索-生成-增强
 - [ ] 
 ## neo4j部署
 Linux部署neo4j server,用nginx反向代理，便于二级域名管理。
+
+## neo4j导入数据
+doc->graph_doc->add_to_graphDB
+
+## neo4j查询数据
+
+
+
+
+
+
+
+
+
 
 
 
@@ -55,10 +72,7 @@ Linux部署neo4j server,用nginx反向代理，便于二级域名管理。
 
 # 我要用RAG做什么？
 
-demo1【My Life Coach】
-- 多个平台，不同领域
-- 多种形式：付费课程，付费文章，收藏
-- Internet Teacher
+
 
 形式？
 - 融合多人？

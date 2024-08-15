@@ -14,9 +14,13 @@ from Configs import config
 from langchain_community.llms.tongyi import Tongyi
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 
+
+# neo4j
 from langchain.chains.graph_qa.cypher import GraphCypherQAChain
 from langchain_community.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
+
+
 from langchain_core.documents import Document
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -24,10 +28,38 @@ from langchain_core.prompts import (
     PromptTemplate,
 )
 
+CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
+Instructions:
+Use only the provided relationship types and properties in the schema.
+Do not use any other relationship types or properties that are not provided.
+Schema:
+{schema}
+Note: Do not include any explanations or apologies in your responses.
+Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
+Do not include any text except the generated Cypher statement.
+Examples: Here are a few examples of generated Cypher statements for particular questions:
+# How many people played in Top Gun?
+MATCH (m:Movie {{name:"Top Gun"}})<-[:ACTED_IN]-()
+RETURN count(*) AS numberOfActors
+
+The question is:
+{question}"""
+
+CYPHER_GENERATION_PROMPT = PromptTemplate(
+    input_variables=["schema", "question"], template=CYPHER_GENERATION_TEMPLATE
+)
+
 embeddings_model=HuggingFaceEmbeddings(
     model_name=config.EMBEDDING_MODEL_PATH,
     model_kwargs={"device": "cpu", "trust_remote_code": True,"local_files_only":True})
 llm = Tongyi(model_name=config.LLM_MODEL_NAME)
+graph_db = Neo4jGraph()
+chain = GraphCypherQAChain.from_llm(llm=llm,
+                                    graph=graph_db, 
+                                    verbose=True,
+                                    cypher_prompt=CYPHER_GENERATION_PROMPT, 
+                                    return_intermediate_steps=True)
+# result['intermediate_steps']  result['result']
 
  
 
@@ -66,7 +98,7 @@ def embedding_doc():
     print("向量索引已保存在：", config.VECTOR_DB_PATH)
 
 def graph_doc():
-    graph = Neo4jGraph()
+   
     splitted_documents= split_docs(load_pdf_docs())
     
     print("开始graph")
@@ -76,7 +108,7 @@ def graph_doc():
     i=len(graph_documents)
     for doc in graph_documents:
         # print(doc)
-        graph.add_graph_documents([doc]) 
+        graph_db.add_graph_documents([doc]) 
         print(i)
         i=i-1
 
@@ -90,14 +122,21 @@ def graph_doc():
     # graph.add_graph_documents(graph_documents) 
     print("save to neo4j graph db") 
  
+def chat_from_graph(input):
+    print("开始chat")
+    graph_q=f'query:{input}'
+    result = chain.invoke(graph_q)
+    print(result["intermediate_steps"])
+    print(result["result"])
 
 
 if __name__ == '__main__':
     # print(os.listdir(config.SRC_FODER_PATH))
     # embedding_doc()
-    graph = Neo4jGraph()
-    graph.refresh_schema()
-    graph_doc()
+    # graph_db.refresh_schema()
+    # print("refresh schema")
+    # graph_doc()
+    chat_from_graph("关于制造税收的段落")
 
 
 
