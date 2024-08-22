@@ -12,11 +12,12 @@ from langchain_core.runnables import RunnablePassthrough
 from langchain_core.prompts import PromptTemplate
 from Configs import config
 from langchain_community.llms.tongyi import Tongyi
+from langchain_community.chat_models import ChatTongyi
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 
 
 # neo4j
-from langchain.chains.graph_qa.cypher import GraphCypherQAChain
+
 from langchain_community.graphs import Neo4jGraph
 from langchain_community.vectorstores import Neo4jVector
 
@@ -28,40 +29,20 @@ from langchain_core.prompts import (
     PromptTemplate,
 )
 
-CYPHER_GENERATION_TEMPLATE = """Task:Generate Cypher statement to query a graph database.
-Instructions:
-Use only the provided relationship types and properties in the schema.
-Do not use any other relationship types or properties that are not provided.
-Schema:
-{schema}
-Note: Do not include any explanations or apologies in your responses.
-Do not respond to any questions that might ask anything else than for you to construct a Cypher statement.
-Do not include any text except the generated Cypher statement.
-Examples: Here are a few examples of generated Cypher statements for particular questions:
-# How many people played in Top Gun?
-MATCH (m:Movie {{name:"Top Gun"}})<-[:ACTED_IN]-()
-RETURN count(*) AS numberOfActors
 
-The question is:
-{question}"""
 
-CYPHER_GENERATION_PROMPT = PromptTemplate(
-    input_variables=["schema", "question"], template=CYPHER_GENERATION_TEMPLATE
-)
 
 embeddings_model=HuggingFaceEmbeddings(
     model_name=config.EMBEDDING_MODEL_PATH,
     model_kwargs={"device": "cpu", "trust_remote_code": True,"local_files_only":True})
 llm = Tongyi(model_name=config.LLM_MODEL_NAME)
-graph_db = Neo4jGraph()
-chain = GraphCypherQAChain.from_llm(llm=llm,
-                                    graph=graph_db, 
-                                    verbose=True,
-                                    cypher_prompt=CYPHER_GENERATION_PROMPT, 
-                                    return_intermediate_steps=True)
+chat_tongyi=ChatTongyi(model_name=config.LLM_MODEL_NAME)
+graph_db = Neo4jGraph() # neo4j python driver
+
 # result['intermediate_steps']  result['result']
 
  
+
 
 def load_pdf_docs():
     print("开始load")
@@ -73,10 +54,14 @@ def load_pdf_docs():
     # print(documents[0])
 
     return documents
+
 def split_docs(documents):
+
     print("开始split")
+
+    #普通切分 vs 基于语义的切分
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=500, chunk_overlap=10
+        chunk_size=300, chunk_overlap=10
     )
     splitted_documents = text_splitter.split_documents(documents)
     print(len(splitted_documents))
@@ -97,37 +82,52 @@ def embedding_doc():
     db.save_local(config.VECTOR_DB_PATH)
     print("向量索引已保存在：", config.VECTOR_DB_PATH)
 
+def save_to_graph(graph_docs):
+    i=len(graph_docs)
+    for doc in graph_docs:
+        graph_db.add_graph_documents([doc]) 
+        print(i)
+        print(doc.nodes)
+        i=i-1
+        #     print('nodes')
+        #     print(doc.nodes)
+        #     print('Relationships')
+        #     print(doc.relationships)
+    
 def graph_doc():
    
     splitted_documents= split_docs(load_pdf_docs())
     
     print("开始graph")
     llm_transformer = LLMGraphTransformer(llm=llm)
-    graph_documents= llm_transformer.convert_to_graph_documents(splitted_documents)
-    print(len(graph_documents))
-    i=len(graph_documents)
-    for doc in graph_documents:
+    i=len(splitted_documents)
+   
         # print(doc)
-        graph_db.add_graph_documents([doc]) 
-        print(i)
-        i=i-1
+    graph_docs=[]
+    def batch_process(documents, batch_size):
+        for i in range(0, len(documents), batch_size):
+            yield documents[i:i + batch_size]
+    batch_size = 100  # 根据实际情况调整批处理大小
+    graph_docs = []
 
-    #     print('nodes')
-    #     print(doc.nodes)
-    #     print('Relationships')
-    #     print(doc.relationships)
+    for batch in batch_process(splitted_documents, batch_size):
+        try:
+            batch_graph_doc= llm_transformer.convert_to_graph_documents(batch) # how to make good nodes?
+            graph_docs.extend(batch_graph_doc)
+            print(len(graph_docs))
+            save_to_graph(batch_graph_doc)
+        except Exception as e:
+            print(f"An exception occurred: {e}")
+            continue
+ 
+ 
     
 
     # 太多了 需要分批保存
     # graph.add_graph_documents(graph_documents) 
     print("save to neo4j graph db") 
  
-def chat_from_graph(input):
-    print("开始chat")
-    graph_q=f'query:{input}'
-    result = chain.invoke(graph_q)
-    print(result["intermediate_steps"])
-    print(result["result"])
+
 
 
 if __name__ == '__main__':
@@ -135,8 +135,8 @@ if __name__ == '__main__':
     # embedding_doc()
     # graph_db.refresh_schema()
     # print("refresh schema")
-    # graph_doc()
-    chat_from_graph("关于制造税收的段落")
+    graph_doc()
+  
 
 
 
