@@ -1,24 +1,9 @@
-# 任务
-0.爬取中文文本
+# 使用说明
+0. 爬取中文文本
 
-1.txt2vec(专业术语embedding)
-#input：text
-#output:vector
-【中文文本向量化模型】text2vec-base-chinese
-部署参考：https://blog.csdn.net/hugo_lei/article/details/134630373bi
-
-2. vectorStore
-【向量数据库】Milvus/FAISS
-
-3.在数据库中检索
-#intput: question
-#output: releated text context
-【检索器】retriever = db.as_retriever()
-
-4.处理用户的输入输出
-#input:question
-#output:Answer
-【生成模型】llm
+1. txt2vec.py a.负责从文本提取节点三元组，并存入neo4j图数据库. b.负责将文本向量化，并存入向量数据库
+2. grapg_query.py 负责从neo4j图数据库中查询节点信息
+3. vector_query.py 向量数据库作为知识库，回答问题
 
 RAG:检索-生成-增强
 过程：知识生产与加工、query改写、数据召回、后置处理以及大模型生产。
@@ -27,12 +12,14 @@ RAG:检索-生成-增强
 # 进度
 - [x] demo搭建
 - [ ] 挑选合适的rag模型
- - [ ] graph库
+  [x] graph库
 - [ ] 搭建网页端
 - [ ] 自动更新知识库
 
 
 # GraphRAG
+【中文文本向量化模型】text2vec-base-chinese
+部署参考：https://blog.csdn.net/hugo_lei/article/details/134630373bi
 
 ## 进度
 - [x] 非结构化文本创建知识图谱
@@ -45,7 +32,7 @@ RAG:检索-生成-增强
   - [ ] 如何保存对话历史？
   - [ ] 如何融合查询？
   - [ ] 敏感词过滤
-- [ ] Cypher 知识图谱检索信息
+- [x] Cypher 知识图谱检索信息
 - [ ] 向量数据库+图数据库
 - [ ] 
 ## neo4j部署

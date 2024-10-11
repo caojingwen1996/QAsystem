@@ -16,6 +16,7 @@ from langchain_community.chat_models import ChatTongyi
 from langchain_experimental.graph_transformers import LLMGraphTransformer
 
 
+
 # neo4j
 
 from langchain_community.graphs import Neo4jGraph
@@ -36,7 +37,7 @@ embeddings_model=HuggingFaceEmbeddings(
     model_name=config.EMBEDDING_MODEL_PATH,
     model_kwargs={"device": "cpu", "trust_remote_code": True,"local_files_only":True})
 llm = Tongyi(model_name=config.LLM_MODEL_NAME)
-chat_tongyi=ChatTongyi(model_name=config.LLM_MODEL_NAME)
+
 graph_db = Neo4jGraph() # neo4j python driver
 
 # result['intermediate_steps']  result['result']
@@ -73,9 +74,9 @@ def split_docs(documents):
 
 
 
-# # # 获取要嵌入的文档内容
 
-def embedding_doc():
+
+def save_to_vectorDB():
     print("开始FAISS")
     splitted_documents= split_docs(load_pdf_docs())
     db = FAISS.from_documents(splitted_documents, embeddings_model)
@@ -99,10 +100,10 @@ def graph_doc():
     splitted_documents= split_docs(load_pdf_docs())
     
     print("开始graph")
-    llm_transformer = LLMGraphTransformer(llm=llm)
     i=len(splitted_documents)
+    llm_transformer = LLMGraphTransformer(llm=llm)
    
-        # print(doc)
+
     graph_docs=[]
     def batch_process(documents, batch_size):
         for i in range(0, len(documents), batch_size):
@@ -117,7 +118,7 @@ def graph_doc():
             print(len(graph_docs))
             save_to_graph(batch_graph_doc)
         except Exception as e:
-            print(f"An exception occurred: {e}")
+            print(f"An exception occurred when convert: {e}")
             continue
  
  
@@ -132,11 +133,13 @@ def graph_doc():
 
 if __name__ == '__main__':
     # print(os.listdir(config.SRC_FODER_PATH))
-    # embedding_doc()
+    # save_to_vectorDB()
     # graph_db.refresh_schema()
     # print("refresh schema")
     graph_doc()
-  
+
+    
+    
 
 
 

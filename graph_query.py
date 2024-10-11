@@ -43,7 +43,7 @@ CYPHER_GENERATION_PROMPT = PromptTemplate(
 
 
 SESSION_ID = str(uuid4())
-print(f"Session ID: {SESSION_ID}")
+# print(f"Session ID: {SESSION_ID}")
 memory=ChatMessageHistory()
 graph_db = Neo4jGraph()
 
@@ -70,19 +70,26 @@ chat_llm= Tongyi(model_name=config.LLM_MODEL_NAME)
 
 chat_chain=prompt | chat_llm | StrOutputParser()
 
+
+# 用prompt模板将自然语言转为cypher查询
 cypher_chain  = GraphCypherQAChain.from_llm(llm=chat_llm,
                                     graph=graph_db, 
                                     verbose=True,
                                     cypher_prompt=CYPHER_GENERATION_PROMPT, 
                                     return_intermediate_steps=True)
 
+# 直接输入自然语言查询
 def chat_from_graph(input):
     print("开始chat")
-    graph_q=f'query:{input}'
-    result = cypher_chain.invoke(graph_q)
+    query=f'query:{input}'
+    result = cypher_chain.invoke(query)
     print(result["intermediate_steps"])
     print(result["result"])
 
+def cypher_query(input):
+    print("开始cypher查询")
+    result = graph_db.query(input)
+    print(result)
 
 
 def do_chat():
@@ -122,4 +129,14 @@ def do_chat():
 if __name__ == '__main__':
 
     print('start to query ...')
-    do_chat()
+
+    # 让用户输入查询内容，如果没有输入则使用默认查询
+    # query_string = input().strip()
+    # chat_from_graph(query_string)
+   
+    # if not query_string:
+    query_string = "MATCH (n) RETURN n LIMIT 10"  # 默认的 Cypher 查询
+    cypher_query(query_string)
+
+
+    print('end query')
