@@ -2,7 +2,7 @@
 0. 爬取中文文本
 
 1. txt2vec.py a.负责从文本提取节点三元组，并存入neo4j图数据库. b.负责将文本向量化，并存入向量数据库
-2. grapg_query.py 负责从neo4j图数据库中查询节点信息
+2. graph_query.py 负责从neo4j图数据库中查询节点信息
 3. vector_query.py 向量数据库作为知识库，回答问题
 
 RAG:检索-生成-增强

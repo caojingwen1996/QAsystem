@@ -1,8 +1,6 @@
 import gradio as gr
-import os
-import dashscope
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
+from y.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Milvus
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
@@ -61,6 +59,6 @@ if __name__ == '__main__':
     user_input = "你能为我解答哪些困惑？"
     while True:
         response = chat_loop(user_input)
-        print("屠龙的胭脂井：", response)
+        print("智能助手：", response)
         user_input = input("你：")
 

@@ -3,7 +3,7 @@ import os
 
 
 # 用于Embedding的本地模型路径
-EMBEDDING_MODEL_PATH='/Model/text2vec-base-chinese'
+EMBEDDING_MODEL_PATH='Model/text2vec-base-chinese'
 
 # 本地向量数据库的root路径
 VECTOR_DB_PATH='Data/VectorDB/faiss_index_text2vec'
