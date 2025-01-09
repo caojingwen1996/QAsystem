@@ -1,6 +1,6 @@
 import gradio as gr
 from langchain_community.vectorstores import FAISS
-from y.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Milvus
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnablePassthrough
